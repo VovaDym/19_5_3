@@ -7,16 +7,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <sstream>
 
 int main() {
 
-    std::vector<std::string> strVec;
-
-    std::string str;
+    std::string str,strMax;
+    int payoutMax = 0;
     std::fstream file;
-
-    file.open("C:\\Users\\777\\CLionProjects\\19.5.3\\Bank.text");
+    int sum = 0;
+    file.open("Bank.text");
     if (!file.is_open())
     {
         std::cout << "Error!" << std::endl;
@@ -24,27 +23,22 @@ int main() {
     else
     {
         std::cout << "File is open: " << std::endl;
-        while (!file.eof())
+        while (getline(file, str))
         {
-            file >> str;
-            strVec.push_back(str);
+            std::stringstream ss(str);
+            std::string name,surname,date;
+            int payout;
+            ss >> name >> surname >> payout >> date;
+            if (payout > payoutMax)
+            {
+                payoutMax = payout;
+                strMax = str;
+            }
+            sum += payout;
         }
     }
     file.close();
-
-    int indexTemp = 0;
-    int temp = 0;
-    int sum = 0;
-
-    for(int i = 2;i + 1 < strVec.size(); i += 4)
-    {
-        sum += stoi(strVec[i]);
-        if (stoi(strVec[i]) > temp)
-        {
-            temp = stoi(strVec[i]);
-            indexTemp = i;
-        }
-    }
-    std::cout << strVec[indexTemp - 2] << " " << strVec[indexTemp - 1] << " " << strVec[indexTemp]<<std::endl;
-    std::cout << sum;
+    std::cout << " The highest payout: " << strMax << std::endl;
+    std::cout << " Total amount of payments: " <<sum;
+    return 0;
 }
